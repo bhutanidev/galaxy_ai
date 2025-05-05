@@ -13,6 +13,7 @@ export interface IFormDetails {
 export interface IVideo extends Document {
   uploaded_url: string;
   generatedUrl: string;
+  originalFileName:string;
   clerkId: string;
   formdetails: IFormDetails;
   createdAt: Date;
@@ -57,6 +58,7 @@ const VideoSchema: Schema<IVideo> = new Schema(
   {
     uploaded_url: { type: String, required: true },
     generatedUrl: { type: String, default: '' },
+    originalFileName:{ type:String, required:true},
     clerkId: { type: String, required: true },
     formdetails: {
       type: FormDetailsSchema,
