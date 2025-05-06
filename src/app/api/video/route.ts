@@ -2,8 +2,22 @@ import { dbConnect } from "@/lib/db/connection";
 import { IFormDetails, IVideo, Video } from "@/lib/db/videoModel";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-export function GET(req:NextRequest){
-    return NextResponse.json({message:"hi there"})
+export async function GET(req:NextRequest){
+    const { userId: clerkId } = await auth();
+
+    if (!clerkId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+  
+    await dbConnect();
+  
+    try {
+      const videos = await Video.find({ clerkId }).sort({ createdAt: -1 });
+      return NextResponse.json(videos);
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+      return NextResponse.json({ message: 'Server error' }, { status: 500 });
+    }
 }
 export async function POST(req: NextRequest) {
     await dbConnect()

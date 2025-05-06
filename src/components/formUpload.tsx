@@ -61,7 +61,7 @@ export default function VideoUploadForm() {
     if (!validRatios.includes(aspect_ratio)) return alert("Aspect ratio must be 16:9 or 9:16.");
     if (isNaN(str) || str < 0.01 || str > 1) return alert("Strength must be between 0.01 and 1.");
     try {
-        const result = await axios.post('/api/video-upload',{url:urlRef.current, originalFileName : fileNameRef.current  ,formDetails:{prompt, resolution, num_inference_steps, num_frames, strength, aspect_ratio}})
+        const result = await axios.post('/api/video',{url:urlRef.current, originalFileName : fileNameRef.current  ,formDetails:{prompt, resolution, num_inference_steps, num_frames, strength, aspect_ratio}})
         if(result.data?.error){
             alert(result.data?.error)
             setIsDisabled(false)

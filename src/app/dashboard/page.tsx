@@ -1,3 +1,4 @@
+import AlreadyUploaded from "@/components/alreadyUploaded"
 import { AppSidebar } from "@/components/app-sidebar"
 import VideoUploadForm from "@/components/formUpload"
 import {
@@ -41,7 +42,8 @@ export default function Page() {
           </Breadcrumb> */}
         </header>
         <div className="flex  flex-col items-center p-4">
-          <VideoUploadForm/>
+          {/* <VideoUploadForm/> */}
+          <AlreadyUploaded id="681a4c60238eaf8146089c62"/>
         </div>
       </SidebarInset>
     </SidebarProvider>
