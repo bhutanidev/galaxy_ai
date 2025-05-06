@@ -10,14 +10,16 @@ import axios from "axios";
 import VideoPlayer from "./ui/videoplayer";
 import { dbConnect } from "@/lib/db/connection";
 import { Video } from "@/lib/db/videoModel";
+import { error } from "console";
 
 
 export default async function AlreadyUploaded({id}:{id:string}) {
     console.log(id)
     try {
             await dbConnect()
+            const res = await Video.findById(id);
             // @ts-ignore
-            const {generatedUrl,originalFileName,formdetails}:{generatedUrl:any,originalFileName:any,formdetails:any} = await Video.findById(id);
+            const {uploaded_url,generatedUrl,originalFileName,formdetails}:{uploaded_url:any,generatedUrl:any,originalFileName:any,formdetails:any} = res
             return(
             <div className="min-h-screen p-8 bg-background text-foreground">
               <form  className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6 bg-muted p-6 rounded-xl shadow">
@@ -84,7 +86,7 @@ export default async function AlreadyUploaded({id}:{id:string}) {
                   <div>
                     {/* <h2 className="text-xl font-semibold">Ready to Create Your Video</h2>
                     <p className="text-muted-foreground">Enter details of the video you want to create</p> */}
-                    <VideoPlayer src={"http://res.cloudinary.com/dlv0pc9iw/video/upload/v1746553946/sqh4usvbnt8a2e7uhivl.mp4"} />
+                    <VideoPlayer src={uploaded_url} />
                   </div>
                 </div>
               </form>
@@ -92,6 +94,6 @@ export default async function AlreadyUploaded({id}:{id:string}) {
           );
     } catch (error) {
         console.error("Error fetching video:", error);
-        return <div>Something went wrong while loading the video.</div>;
+        return <div>Video Not found.</div>;
     }
 }

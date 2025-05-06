@@ -15,8 +15,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { ReactNode } from "react"
 
-export default function Page() {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -31,7 +32,7 @@ export default function Page() {
         <div className="flex  flex-col items-center p-4">
           {/* <VideoUploadForm/> */}
           {/* <AlreadyUploaded id="681a4c60238eaf8146089c62"/> */}
-
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>

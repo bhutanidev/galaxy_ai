@@ -23,6 +23,7 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
       }}
       onError={(error,{widget})=>{
         console.log(error)
+        alert(error?.statusText)
         widget.close()
       }}
       options={{
@@ -31,7 +32,7 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
         maxFiles: 1,
         resourceType: 'video', 
         clientAllowedFormats: ['mp4', 'webm', 'mov'], 
-        maxFileSize: 50 * 1024 * 1024,
+        maxFileSize: 15 * 1024 * 1024,
       }}
     >
       {({ open }) => {

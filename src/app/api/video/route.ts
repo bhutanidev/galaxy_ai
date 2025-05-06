@@ -12,8 +12,16 @@ export async function GET(req:NextRequest){
     await dbConnect();
   
     try {
-      const videos = await Video.find({ clerkId }).sort({ createdAt: -1 });
-      return NextResponse.json(videos);
+        const videos = await Video.find({ clerkId })
+        .sort({ createdAt: -1 })
+        .select('originalFileName') 
+        .lean();
+        const formattedVideos = videos.map(video => ({
+            id: video._id.toString(),
+            title: video.originalFileName,
+          }));
+      
+        return NextResponse.json(formattedVideos);
     } catch (error) {
       console.error('Error fetching videos:', error);
       return NextResponse.json({ message: 'Server error' }, { status: 500 });
