@@ -102,7 +102,7 @@ pnpm dev
 
 Generates a Cloudinary signature for secure upload.
 
-### `/api/video/transform`
+### Post `/api/video/`
 
 Handles Fal.ai image transformation request.
 
