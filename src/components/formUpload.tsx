@@ -1,10 +1,26 @@
 "use client";
+
+/**
+ * This component provides a form interface to upload a video file, 
+ * input image transformation parameters (like prompt, steps, strength, etc.),
+ * and submit the form to generate an AI-transformed image using backend API.
+ * 
+ * It includes: 
+ * - File upload via Cloudinary (SignedUpload)
+ * - Input fields for AI model parameters
+ * - Preview of generated image with download option
+ */
+
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import { Upload, CheckCircle, Download } from "lucide-react";
 import SignedUpload from "@/components/fileUpload";
 import axios from "axios";
@@ -19,8 +35,9 @@ export default function VideoUploadForm() {
   const fileNameRef = useRef<string>("");
   const [fileName, setFileName] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-  const [generated,setGenerated] = useState(false);
-  const generatedUrl = useRef("")
+  const [generated, setGenerated] = useState(false);
+  const generatedUrl = useRef("");
+
   const [formData, setFormData] = useState({
     prompt: "",
     strength: 0.95,
@@ -30,8 +47,10 @@ export default function VideoUploadForm() {
     enable_safety_checker: true,
   });
 
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  // Handles input change for form fields
+  function handleInputChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -39,6 +58,7 @@ export default function VideoUploadForm() {
     }));
   }
 
+  // Handles the form submission
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const { prompt, num_inference_steps, strength, guidance_scale, num_images } = formData;
@@ -47,6 +67,7 @@ export default function VideoUploadForm() {
     if (fileNameRef.current.trim() === "") return toast("Please upload a video file.");
     if (!prompt.trim()) return toast("Prompt is required.");
 
+    // Validate numerical inputs
     const numSteps = Number(num_inference_steps);
     const str = Number(strength);
     const cfg = Number(guidance_scale);
@@ -65,6 +86,7 @@ export default function VideoUploadForm() {
     setExpanded(true);
 
     try {
+      toast("Geneating Image....");
       const result = await axios.post("/api/video", {
         url: urlRef.current,
         originalFileName: fileNameRef.current,
@@ -84,15 +106,15 @@ export default function VideoUploadForm() {
         setExpanded(false);
         return;
       }
-      generatedUrl.current = result.data?.generatedUrl
-      setGenerated(true)
+
+      generatedUrl.current = result.data?.generatedUrl;
+      setGenerated(true);
+      toast("Image generated successfully!");
     } catch (error) {
       toast("Something went wrong during submission.");
       setExpanded(false);
       setIsDisabled(false);
     }
-
-    toast("Video submitted successfully!");
   }
 
   return (
@@ -102,7 +124,7 @@ export default function VideoUploadForm() {
         ref={formRef}
         className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6 bg-muted p-6 rounded-xl shadow"
       >
-        {/* Upload Section */}
+        {/* Upload & Input Section */}
         <div className="border w-96 p-4 rounded-md bg-background">
           <fieldset disabled={isDisabled}>
             <Label className="block mb-2 text-lg font-semibold">Upload Video</Label>
@@ -125,7 +147,7 @@ export default function VideoUploadForm() {
               )}
             </div>
 
-            {/* Prompt */}
+            {/* Prompt Input */}
             <div className="mt-4">
               <Label htmlFor="prompt">Prompt</Label>
               <Textarea
@@ -138,7 +160,7 @@ export default function VideoUploadForm() {
               />
             </div>
 
-            {/* Advanced Settings */}
+            {/* Collapsible Advanced Settings */}
             <Collapsible open={expanded} onOpenChange={setExpanded} className="mt-4">
               <CollapsibleTrigger asChild>
                 <Button variant="outline" type="button">
@@ -196,22 +218,30 @@ export default function VideoUploadForm() {
           </fieldset>
         </div>
 
-        {/* Preview / Info Section */}
+        {/* Result Preview Section */}
         <div className="flex items-center justify-center border bg-background rounded-md text-center">
           <div>
             <Upload className="mx-auto mb-4 text-muted-foreground" />
-            {!generated?
-            <>
+            {!generated ? (
+              <>
                 <h2 className="text-xl font-semibold">Ready to Create Your Image</h2>
-                <p className="text-muted-foreground">Enter details of the image you want to create</p>
-            </>:
-            <>
-                <a className=" absolute top-40 right-48" href={transformCloudinaryURL(generatedUrl.current)}><Download/></a> 
+                <p className="text-muted-foreground">
+                  Enter details of the image you want to create
+                </p>
+              </>
+            ) : (
+              <>
+                <a
+                  className="absolute top-40 right-48"
+                  href={transformCloudinaryURL(generatedUrl.current)}
+                >
+                  <Download />
+                </a>
                 <div>
-                    <ImageViewer src={generatedUrl.current} />
+                  <ImageViewer src={generatedUrl.current} />
                 </div>
-            </>}
-
+              </>
+            )}
           </div>
         </div>
       </form>
