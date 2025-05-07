@@ -13,8 +13,10 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
       onSuccess={async(result, { widget }) => {
         console.log("Upload successful: ", result);
         setResource(result?.info);
+        // @ts-ignore
         const url = result?.info?.url as string
         urlRef.current = url 
+        // @ts-ignore
         fileNameRef.current = result?.info?.original_filename as string
         setFileName(fileNameRef.current)
       }}
@@ -23,6 +25,7 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
       }}
       onError={(error,{widget})=>{
         console.log(error)
+        // @ts-ignore
         toast(error?.statusText)
         widget.close()
       }}
