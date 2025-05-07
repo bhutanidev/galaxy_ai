@@ -2,6 +2,7 @@
 import { CldUploadWidget } from 'next-cloudinary';
 import React, { useRef, useState } from 'react';
 import axios from 'axios'
+import { toast } from 'sonner';
 export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.RefObject<string>,fileNameRef: React.RefObject<string>,setFileName: (name: string) => void;}) => {
   const [resource, setResource] = useState<any>();
 
@@ -23,17 +24,17 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
       }}
       onError={(error,{widget})=>{
         console.log(error)
-        alert(error?.statusText)
+        toast(error?.statusText)
         widget.close()
       }}
       options={{
         sources: ['local'],
         multiple: false,
         maxFiles: 1,
-        resourceType: 'video', 
-        clientAllowedFormats: ['mp4', 'webm', 'mov'], 
-        maxFileSize: 15 * 1024 * 1024,
-      }}
+        resourceType: 'image',
+        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+        maxFileSize: 5 * 1024 * 1024, // 5 MB
+      }}      
     >
       {({ open }) => {
         function handleOnClick() {
@@ -43,7 +44,7 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
 
         return (
           <button type='button' onClick={handleOnClick}>
-            Upload a Video
+            Upload an Image
           </button>
         );
       }}

@@ -24,7 +24,9 @@ export default async function LandingPage() {
         <h1 className="text-2xl font-bold">Video2Video AI</h1>
         <div className="flex items-center gap-4">
           <ModeToggle />
-          <Button variant="outline"><SignInButton>Sign in</SignInButton></Button>
+          <SignInButton>
+            <Button variant="outline">Sign in</Button>
+          </SignInButton>
         </div>
       </header>
 

@@ -1,16 +1,18 @@
 import React from "react";
 
-interface VideoPlayerProps {
+interface ImageViewerProps {
   src: string;
+  alt?: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
+const ImageViewer: React.FC<ImageViewerProps> = ({ src, alt = "Uploaded image" }) => {
   return (
-    <video controls width="100%" style={{ borderRadius: "8px" }}>
-      <source src={src} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+    <img
+      src={src}
+      alt={alt}
+      style={{ width: "100%", borderRadius: "8px", objectFit: "cover" }}
+    />
   );
 };
 
-export default VideoPlayer;
+export default ImageViewer;

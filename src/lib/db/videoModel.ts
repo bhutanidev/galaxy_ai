@@ -1,16 +1,15 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IFormDetails {
-  prompt: string;
-  num_inference_steps: number;
-  aspect_ratio: string;
-  resolution: string;
-  num_frames: number;
-  enable_safety_checker: boolean;
-  strength: number;
-}
+    prompt: string;
+    strength: number;
+    num_inference_steps: number;
+    guidance_scale: number;
+    num_images: number;
+    enable_safety_checker: boolean;
+  }
 
-export interface IVideo extends Document {
+export interface IImage extends Document {
   uploaded_url: string;
   generatedUrl: string;
   originalFileName:string;
@@ -21,40 +20,35 @@ export interface IVideo extends Document {
 }
 
 const FormDetailsSchema: Schema<IFormDetails> = new Schema(
-  {
-    prompt: {
-      type: String,
-      required: true,
+    {
+      prompt: {
+        type: String,
+        required: true,
+      },
+      strength: {
+        type: Number,
+        default: 0.95,
+      },
+      num_inference_steps: {
+        type: Number,
+        default: 40,
+      },
+      guidance_scale: {
+        type: Number,
+        default: 3.5,
+      },
+      num_images: {
+        type: Number,
+        default: 1,
+      },
+      enable_safety_checker: {
+        type: Boolean,
+        default: true,
+      },
     },
-    num_inference_steps: {
-      type: Number,
-      default: 30,
-    },
-    aspect_ratio: {
-      type: String,
-      default: '16:9',
-    },
-    resolution: {
-      type: String,
-      default: '720p',
-    },
-    num_frames: {
-      type: Number,
-      default: 129,
-    },
-    enable_safety_checker: {
-      type: Boolean,
-      default: true,
-    },
-    strength: {
-      type: Number,
-      default: 0.85,
-    },
-  },
-  { _id: false } // Prevents creation of a subdocument _id for formdetails
-);
-
-const VideoSchema: Schema<IVideo> = new Schema(
+    { _id: false } // Prevents creation of a subdocument _id
+  );
+const ImageSchema: Schema<IImage> = new Schema(
   {
     uploaded_url: { type: String, required: true },
     generatedUrl: { type: String, default: '' },
@@ -68,5 +62,5 @@ const VideoSchema: Schema<IVideo> = new Schema(
   { timestamps: true }
 );
 
-export const Video: Model<IVideo> =
-  mongoose.models.Video || mongoose.model<IVideo>('Video', VideoSchema);
+export const Image: Model<IImage> =
+  mongoose.models.Image || mongoose.model<IImage>('Image', ImageSchema);

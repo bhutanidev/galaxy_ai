@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/db/connection";
-import { IFormDetails, IVideo, Video } from "@/lib/db/videoModel";
+import { IFormDetails, Image } from "@/lib/db/videoModel";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 export async function GET(req:NextRequest){
@@ -12,18 +12,18 @@ export async function GET(req:NextRequest){
     await dbConnect();
   
     try {
-        const videos = await Video.find({ clerkId })
+        const image = await Image.find({ clerkId })
         .sort({ createdAt: -1 })
         .select('originalFileName') 
         .lean();
-        const formattedVideos = videos.map(video => ({
+        const formattedimage = image.map(video => ({
             id: video._id.toString(),
             title: video.originalFileName,
           }));
       
-        return NextResponse.json(formattedVideos);
+        return NextResponse.json(formattedimage);
     } catch (error) {
-      console.error('Error fetching videos:', error);
+      console.error('Error fetching image:', error);
       return NextResponse.json({ message: 'Server error' }, { status: 500 });
     }
 }
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         formdetails:formDetails
     } 
     try {
-        const videoModel = Video
+        const videoModel = Image
         const newurl = await videoModel.create({
             ...newentry
         })

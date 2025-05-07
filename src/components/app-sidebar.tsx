@@ -8,6 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -22,31 +23,26 @@ import { MessageSquare, Plus } from "lucide-react"
 import { Button } from "./ui/button"
 import axios from "axios"
 import clsx from "clsx"
+import useSWR from 'swr'
+import { SignedOut, SignOutButton } from "@clerk/nextjs"
 
-
-
+const axiosFetcher = (url: string) =>
+  axios.get(url).then(res => res.data)
 export function AppSidebar({ ...props}: React.ComponentProps<typeof Sidebar>) {
   const [chats, setChats] = useState<{ id: string; title: string }[]>([]);
   const pathname = usePathname();
   const router = useRouter();
+  const { data } = useSWR('/api/video', axiosFetcher)
   useEffect(() => {
-    const fetchChats = async () => {
-    try {
-        const res = await axios.get('/api/video');
-        console.log(res.data);
-        
-        setChats(res.data);
-    } catch (error) {
-        alert("error fetching histroy")
+    if (data) {
+      setChats(data)
     }
-    };
-    fetchChats();
-  }, []);
+  }, [data])
   return (
     <Sidebar {...props}>
       <SidebarHeader className="p-4 flex justify-between items-center border-b">
-        <h2 className="text-lg font-bold">History</h2>
-        <Button size="sm" variant="ghost" onClick={()=>router.push('/dashboard/chat')}>
+        <h2 className="text-2xl font-bold">History</h2>
+        <Button  onClick={()=>router.push('/dashboard/chat')}>
           <Plus className="w-4 h-4" />
         </Button>
       </SidebarHeader>
@@ -75,6 +71,12 @@ export function AppSidebar({ ...props}: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarRail />
+      <SidebarFooter>
+        <SignOutButton>
+          <Button>Sign Out</Button>
+        </SignOutButton>
+        
+      </SidebarFooter>
     </Sidebar>
   );
 }
