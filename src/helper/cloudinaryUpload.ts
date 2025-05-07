@@ -1,11 +1,10 @@
 "use server"
-import cloudinary from "@/lib/cloudinary"; // Make sure this is server-only
+import cloudinary from "@/lib/cloudinary";
 
 
 export async function uploadImageFromUrl(imageUrl: string) {
   try {
     const result = await cloudinary.uploader.upload(imageUrl, {
-      folder: "your-folder-name", // Replace with your folder if needed
       resource_type: "image",
     });
 

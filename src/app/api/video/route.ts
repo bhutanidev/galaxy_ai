@@ -120,8 +120,7 @@ export async function POST(req: NextRequest) {
       { generatedUrl: cloudinary_generated_url.secure_url },
       { new: true }
     );
-
-    return NextResponse.json({ ...update_url });
+    return NextResponse.json({ generatedUrl:update_url?.generatedUrl });
   } catch (error) {
     return NextResponse.json({ statuscode: 500, error: error });
   }

@@ -107,6 +107,7 @@ export default function VideoUploadForm() {
         return;
       }
 
+      console.log(result.data);
       generatedUrl.current = result.data?.generatedUrl;
       setGenerated(true);
       toast("Image generated successfully!");
@@ -221,9 +222,9 @@ export default function VideoUploadForm() {
         {/* Result Preview Section */}
         <div className="flex items-center justify-center border bg-background rounded-md text-center">
           <div>
-            <Upload className="mx-auto mb-4 text-muted-foreground" />
             {!generated ? (
-              <>
+                <>
+                <Upload className="mx-auto mb-4 text-muted-foreground" />
                 <h2 className="text-xl font-semibold">Ready to Create Your Image</h2>
                 <p className="text-muted-foreground">
                   Enter details of the image you want to create
