@@ -12,7 +12,6 @@ export const SignedUpload = ({urlRef, fileNameRef,setFileName}:{urlRef: React.Re
       uploadPreset="galaxy_ai_cloudinary"
       onSuccess={async(result, { widget }) => {
         console.log("Upload successful: ", result);
-        // const url = result?.info
         setResource(result?.info);
         const url = result?.info?.url as string
         urlRef.current = url 

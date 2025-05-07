@@ -2,6 +2,13 @@ import { dbConnect } from "@/lib/db/connection";
 import { IFormDetails, Image } from "@/lib/db/videoModel";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { uploadImageFromUrl } from "@/helper/cloudinaryUpload";
+import { fal } from "@fal-ai/client";
+
+fal.config({
+  credentials: process.env.FAL_KEY
+});
+
 export async function GET(req:NextRequest){
     const { userId: clerkId } = await auth();
 
@@ -44,12 +51,32 @@ export async function POST(req: NextRequest) {
         formdetails:formDetails
     } 
     try {
-        const videoModel = Image
-        const newurl = await videoModel.create({
+        const imageModel = Image
+        const newImage = await imageModel.create({
             ...newentry
         })
-        // make an api call to fal api
-        return NextResponse.json({...newentry})
+        const {uploaded_url , formdetails} = newImage
+        const result = await fal.subscribe("fal-ai/flux/dev/image-to-image", {
+          input: {
+            image_url: uploaded_url,
+            prompt:formdetails.prompt,
+            strength:formdetails.strength,
+            num_images:formdetails.num_images,
+            num_inference_steps:formdetails.num_inference_steps,
+            guidance_scale:formdetails.guidance_scale
+          },
+          logs: true,
+          onQueueUpdate: (update) => {
+            if (update.status === "IN_PROGRESS") {
+              update.logs.map((log) => log.message).forEach(console.log);
+            }
+          },
+        });
+        console.log(result.data);
+        console.log(result.requestId);
+        const cloudinary_generated_url = await uploadImageFromUrl(result.data.images[0].url)
+        const update_url = await  imageModel.findByIdAndUpdate(newImage.id,{generatedUrl:cloudinary_generated_url.secure_url},{new:true})
+        return NextResponse.json({...update_url})
     } catch (error) {
         return NextResponse.json({statuscode:500,error:error})
     }

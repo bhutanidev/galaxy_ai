@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { Upload, CheckCircle } from "lucide-react";
+import { Upload, CheckCircle, Download } from "lucide-react";
 import SignedUpload from "@/components/fileUpload";
 import axios from "axios";
 import { toast } from "sonner";
+import ImageViewer from "./ui/videoplayer";
+import transformCloudinaryURL from "@/utils/downloadableUrl";
 
 export default function VideoUploadForm() {
   const [expanded, setExpanded] = useState(false);
@@ -17,7 +19,8 @@ export default function VideoUploadForm() {
   const fileNameRef = useRef<string>("");
   const [fileName, setFileName] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-
+  const [generated,setGenerated] = useState(false);
+  const generatedUrl = useRef("")
   const [formData, setFormData] = useState({
     prompt: "",
     strength: 0.95,
@@ -26,6 +29,7 @@ export default function VideoUploadForm() {
     num_images: 1,
     enable_safety_checker: true,
   });
+
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target;
@@ -80,6 +84,8 @@ export default function VideoUploadForm() {
         setExpanded(false);
         return;
       }
+      generatedUrl.current = result.data?.generatedUrl
+      setGenerated(true)
     } catch (error) {
       toast("Something went wrong during submission.");
       setExpanded(false);
@@ -159,11 +165,12 @@ export default function VideoUploadForm() {
                   />
                 </div>
                 <div>
-                  <Label>Number of Images</Label>
+                  <Label>Number of Images (limited to 1 for now)</Label>
                   <Input
                     type="number"
                     name="num_images"
                     value={formData.num_images}
+                    disabled
                     onChange={handleInputChange}
                   />
                 </div>
@@ -193,8 +200,18 @@ export default function VideoUploadForm() {
         <div className="flex items-center justify-center border bg-background rounded-md text-center">
           <div>
             <Upload className="mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-xl font-semibold">Ready to Create Your Image</h2>
-            <p className="text-muted-foreground">Enter details of the image you want to create</p>
+            {!generated?
+            <>
+                <h2 className="text-xl font-semibold">Ready to Create Your Image</h2>
+                <p className="text-muted-foreground">Enter details of the image you want to create</p>
+            </>:
+            <>
+                <a className=" absolute top-40 right-48" href={transformCloudinaryURL(generatedUrl.current)}><Download/></a> 
+                <div>
+                    <ImageViewer src={generatedUrl.current} />
+                </div>
+            </>}
+
           </div>
         </div>
       </form>

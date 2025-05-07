@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🖼️ AI Image Transformation App
 
-## Getting Started
+A modern AI-powered image-to-image transformation web app built with **Next.js**, **Clerk**, **Cloudinary**, **Fal.ai**, and **Shadcn UI**. Users can sign in, upload images, run transformations, and view/download results — all stored securely.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Tech Stack
+
+| Tech                   | Use Case                                 |
+| ---------------------- | ---------------------------------------- |
+| **Next.js App Router** | Frontend + Backend                       |
+| **Clerk**              | Authentication (sign-in/sign-up/session) |
+| **MongoDB + Mongoose** | Database to persist transformations      |
+| **Fal.ai**             | AI-based image transformation API        |
+| **Cloudinary**         | Store original and transformed images    |
+| **Shadcn/UI**          | Modern UI components & theming           |
+
+---
+
+## 🌍 Environment Variables
+
+Ensure the following environment variables are added to `.env.local`:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+CLERK_SECRET_KEY=your_clerk_secret
+MONGODB_URL=mongodb+srv://your-db-url
+
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+NEXT_PUBLIC_CLOUDINARY_API_KEY=your_cloud_key
+CLOUDINARY_API_SECRET=your_cloud_secret
+
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=http://localhost:3000/
+FAL_KEY=your_fal_api_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧾 Folder Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+src/
+├── app/
+│   ├── api/                 # API routes (e.g., /api/sign, /api/video)
+│   ├── dashboard/           # Dashboard UI (authenticated)
+│   ├── not-found.tsx        # Custom 404 page
+│   └── page.tsx             # Home page
+├── components/              # UI and reusable components
+├── helper/                  # Utility functions, data helpers
+├── hooks/                   # Custom hooks
+├── lib/                     # DB connection, cloudinary, fal
+├── utils/
+│   ├── downloadableUrl.ts   # Transform cloudinary URLs
+│   ├── generateUploadSignature.ts # Secure upload handler
+│   └── middleware.ts        # Next.js middleware (auth, etc.)
+└── styles/globals.css       # Global styles
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 💡 Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* 🔐 Secure login/signup via **Clerk**
+* 📄 Upload images and receive a transformed version
+* 🧠 AI transformation using **Fal.ai**
+* ☁️ Store both original and result via **Cloudinary**
+* 🎨 Fully theme-sensitive UI using **Shadcn UI**
+* ✅ MongoDB stores transformation records per user
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ Setup Instructions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone the repo**:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git clone https://github.com/your-username/image-ai-transform.git
+cd image-ai-transform
+```
+
+2. **Install dependencies**:
+
+```bash
+pnpm install
+```
+
+3. **Add `.env.local`** (use above values)
+
+4. **Run locally**:
+
+```bash
+pnpm dev
+```
+
+5. Visit: `http://localhost:3000`
+
+---
+
+## 📸 API & Cloud Functions
+
+### `/api/sign/upload`
+
+Generates a Cloudinary signature for secure upload.
+
+### `/api/video/transform`
+
+Handles Fal.ai image transformation request.
+
+---
+
+## 🖼️ Screenshots
+
+![Screenshot](public/LandingPagw.png)
+
+
+---
+
+## 🛡️ Safety Page (404)
+
+All unknown routes redirect to a safety fallback:
+
+* `app/not-found.tsx` shows a friendly message and a `Go Home` button
+* Styled using `shadcn/ui`
+
+---
+
+## 📝 License
+
+MIT License © 2025 \[Your Name]

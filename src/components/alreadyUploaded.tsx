@@ -9,15 +9,13 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Upload, CheckCircle, Download } from "lucide-react";
-import SignedUpload from "@/components/fileUpload";
-import axios from "axios";
 import { dbConnect } from "@/lib/db/connection";
-import { Image } from "@/lib/db/videoModel"; // can rename if you update the schema later
+import { Image } from "@/lib/db/videoModel";
 import ImageViewer from "./ui/videoplayer";
+import transformCloudinaryURL from "@/utils/downloadableUrl";
 
-function transformCloudinaryURL(url:string) {
-    return url.replace('/upload/', '/upload/fl_attachment/');
-}
+
+
   
 export default async function AlreadyUploaded({ id }: { id: string }) {
   try {
@@ -36,7 +34,7 @@ export default async function AlreadyUploaded({ id }: { id: string }) {
       originalFileName: any;
       formdetails: any;
     } = res;
-    const downloadUrl = transformCloudinaryURL(uploaded_url)
+    const downloadUrl = transformCloudinaryURL(generatedUrl)
     return (
       <div className="min-h-screen p-8 bg-background text-foreground">
         <form className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6 bg-muted p-6 rounded-xl shadow">
@@ -117,7 +115,7 @@ export default async function AlreadyUploaded({ id }: { id: string }) {
           <div className="flex flex-col items-center justify-center border bg-background rounded-md text-center">
             <a className=" absolute top-40 right-48" href={downloadUrl}><Download/></a> 
             <div>
-              <ImageViewer src={uploaded_url} />
+              <ImageViewer src={generatedUrl} />
             </div>
           </div>
         </form>
